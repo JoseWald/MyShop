@@ -1,15 +1,22 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
+import { BrowserRouter as Router,Routes , Route} from "react-router-dom";//Switch became deprecated so ,I used Routes instead
+import "./Bootstrap/css/bootstrap.min.css";
 
 import Login from "./component/Login";
+import Signup from "./component/Signup";
 
-import "./Bootstrap/css/bootstrap.min.css"
 
 
 const root=ReactDOM.createRoot(document.getElementById('root'))
 root.render(
   <div>
-      <Login/>
+        <Router>
+            <Routes>
+                <Route path="/Login" Component={Login}/>
+                <Route path="/Signup" Component={Signup}/>
+            </Routes>
+        </Router>
   </div>
    
 )
