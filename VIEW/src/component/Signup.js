@@ -1,6 +1,6 @@
 import React,{Component} from "react";
 import { Link } from "react-router-dom";
-
+import add_user_png from "../IMG/add-user.png"
 class Signup extends Component{
     constructor(){
         super()
@@ -16,15 +16,13 @@ class Signup extends Component{
                  <div className="p-4   my-3 mx-auto col-md-6 ">
                    <h1 className="text-primary text-center">Create an account</h1>
                     <div className="text-center">
-                      <img src="../img/add-user.png" alt="" className="mx-auto w-75 my-3"/>
+                      <img src={add_user_png} alt="" className="mx-auto w-75 my-3"/>
                     </div>
                   </div>
                      <div className="form-signup  p-4  my-3 mx-auto col-md-6 ">
 
                        <form className="p-4">
                          <div className=" my-2">
-                           <label htmlFor="email" className="form-label">Email:</label>
-                           <input type="email" className="form-control" id="email" required/>
                          </div>
                          <div className=" my-2">
                            <label htmlFor="name" className="form-label">Name:</label>
