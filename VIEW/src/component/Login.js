@@ -32,7 +32,9 @@ class Login extends Component{
 
                         </div>
                         <button type="submit" className="btn btn-primary w-100 my-3 p-2 shadow">Login</button>
-                        <a href="Signup.html"><button type="button" className="btn y text-primary w-100 mt-4 p-2 shadow" id="signup">Signup</button></a>
+                        <Link to="/Signup">
+                          <button type="button" className="btn y text-primary w-100 mt-4 p-2 shadow" id="signup">Signup</button>
+                        </Link>
                       </form>
                     </div>
                     </div>
