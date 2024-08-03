@@ -34,37 +34,37 @@ class Signup extends Component {
       }
 
       handleSubmition(event) {
-        event.preventDefault(); 
+            event.preventDefault(); 
 
-        const { username, password, passwordConfirmation , successMessage} = this.state;
-        const passwordRegex = /[a-zA-Z1-9]/;
+            const { username, password, passwordConfirmation } = this.state;
+            const passwordRegex = /[a-zA-Z1-9]/;
 
-        let valid = true;
+            let valid = true;
 
-        if (username.length < 3) {
-          this.setState({ usernameErrMessage: 'Username too short' });
-          valid = false;
-        } else {
-          this.setState({ usernameErrMessage: '' });
-        }
+            if (username.length < 3) {
+              this.setState({ usernameErrMessage: 'Username too short' });
+              valid = false;
+            } else {
+              this.setState({ usernameErrMessage: '' });
+            }
 
-        if (!passwordRegex.test(password) || password.length<8) {
-          this.setState({ passwordErrMessage: 'Must have at least 8 characters, 1 digit, 1 uppercase and 1 lowercase letter' });
-          valid = false;
-        } else {
-          this.setState({ passwordErrMessage: '' });
-        }
+            if (!passwordRegex.test(password) || password.length<8) {
+              this.setState({ passwordErrMessage: 'Must have at least 8 characters, 1 digit, 1 uppercase and 1 lowercase letter' });
+              valid = false;
+            } else {
+              this.setState({ passwordErrMessage: '' });
+            }
 
-        if (passwordConfirmation !== password) {
-          this.setState({ passwordConfirmationErrMessage: 'Does not match the password' });
-          valid = false;
-        } else {
-          this.setState({ passwordConfirmationErrMessage: '' });
-        }
+            if (passwordConfirmation !== password) {
+              this.setState({ passwordConfirmationErrMessage: 'Does not match the password' });
+              valid = false;
+            } else {
+              this.setState({ passwordConfirmationErrMessage: '' });
+            }
 
-        if (valid) {
-          this.setState({successMessage:'account created successfully , now go to the login page '})
-        }
+            if (valid) {
+              this.setState({successMessage:'account created successfully , now go to the login page '})
+            }
       }
 
       render() {

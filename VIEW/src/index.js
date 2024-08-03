@@ -5,6 +5,7 @@ import "./Bootstrap/css/bootstrap.min.css";
 
 import Login from "./component/Login";
 import Signup from "./component/Signup";
+import Dashboard from "./component/Dashboard";
 
 
 
@@ -15,6 +16,7 @@ root.render(
             <Routes>
                 <Route path="/Login" Component={Login}/>
                 <Route path="/Signup" Component={Signup}/>
+                <Route path="/Dashboard" Component={Dashboard}/>
             </Routes>
         </Router>
   </div>
