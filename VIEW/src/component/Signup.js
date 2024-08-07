@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import add_user_png from "../IMG/add-user.png";
+import axios  from "axios";
 
 class Signup extends Component {
       constructor(props) {
@@ -33,7 +34,7 @@ class Signup extends Component {
         this.setState({ passwordConfirmation: event.target.value });
       }
 
-      handleSubmition(event) {
+       async handleSubmition(event) {
             event.preventDefault(); 
 
             const { username, password, passwordConfirmation } = this.state;
@@ -63,7 +64,17 @@ class Signup extends Component {
             }
 
             if (valid) {
-              this.setState({successMessage:'account created successfully , now go to the login page '})
+                try {
+                  const res = await axios.post('http://localhost:8000/auth/register', {
+                      username: this.state.username,
+                      password: this.state.password
+                  });
+                  this.setState({ successMessage: 'Account created successfully, now go to the login page' });
+                } catch (e) {
+                  console.log(e.response?.data.message || "Error while registering");
+                  this.setState({ successMessage: 'Internal server error' });
+                }
+              
             }
       }
 

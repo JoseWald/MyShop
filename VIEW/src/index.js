@@ -1,28 +1,28 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { BrowserRouter as Router,Routes , Route} from "react-router-dom";//Switch became deprecated so ,I used Routes instead
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "./Bootstrap/css/bootstrap.min.css";
 
+import Navbar  from "./component/navbar";
 import Login from "./component/Login";
 import Signup from "./component/Signup";
-import Dashboard from "./component/Dashboard";
+import Dashboard from "./page/Dashboard";
+import Sale from "./page/Sale";
+import History from "./page/history";
+import Management from "./page/Management";
 
-
-
-const root=ReactDOM.createRoot(document.getElementById('root'))
+const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <div>
-        <Router>
-            <Routes>
-                <Route path="/Login" Component={Login}/>
-                <Route path="/Signup" Component={Signup}/>
-                <Route path="/Dashboard" Component={Dashboard}/>
-            </Routes>
-        </Router>
-  </div>
-   
-)
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-//reportWebVitals();
+  <Router>
+    <Navbar/>
+    <Routes>
+    <Route path="/" element={<Login />} />
+      <Route path="/Login" element={<Login />} />
+      <Route path="/Signup" element={<Signup />} />
+      <Route path="/Dashboard" element={<Dashboard />} />
+      <Route path="/Sale" element={<Sale />} />
+      <Route path="/History" element={<History />} />
+      <Route path="/Management" element={<Management />} />
+    </Routes>
+  </Router>
+);

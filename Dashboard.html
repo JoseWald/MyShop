@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tableau de Bord - Gestion de Stock</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <head>
+    
+        <nav class="navbar navbar-expand-lg navbar-primary bg-primary fixed-top shadow">
+            <div class="container-fluid">
+                <a href="" class="navbar-brand text-light">MyShop</a>
+                <button class="navbar-toggler" data-bs-toggle = "collapse" data-bs-target = "#navbarNav" aria-controls = "navbarNav"
+                    aria-expanded ="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav mx-auto">
+                        <li class="nav-item mx-4 ">
+                            <a href="#" class="nav-link text-light">Dashboard</a>
+                        </li>
+                        <li class="nav-item mx-4 ">
+                            <a href="StockManagement/Sale.html" class="nav-link text-light">Products</a>
+                        </li>
+                        <li class="nav-item mx-4 ">
+                            <a href="StockManagement/Stock.html" class="nav-link text-light">Management</a>
+                        </li>
+                        <li class="nav-item mx-4 ">
+                            <a href="History.html" class="nav-link text-light">History</a>
+                        </li>
+                    </ul>
+                </div>
+    
+    
+            </div>
+        </nav>
+     
+    </head>
+
+    <main class="mt-5">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <h1 class="my-4">Dashboard</h1>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="card text-light bg-primary mb-3">
+                        <div class="card-header">Stocks</div>
+                        <div class="card-body">
+                            <h5 class="card-title">1,250</h5>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-white bg-success mb-3">
+                        <div class="card-header">Nombre de Produits</div>
+                        <div class="card-body">
+                            <h5 class="card-title">200</h5>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-white bg-warning mb-3">
+                        <div class="card-header">Produits à Réapprovisionner</div>
+                        <div class="card-body">
+                            <h5 class="card-title">15</h5>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-white bg-danger mb-3">
+                        <div class="card-header">Produits totalement épuisés</div>
+                        <div class="card-body">
+                            <h5 class="card-title">5</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card mb-4 shadow">
+                        <div class="card-header text-light bg-primary">Produits les Plus Vendus</div>
+                        <div class="card-body">
+                            <ul class="list-group">
+                                <li class="list-group-item">Produit A</li>
+                                <li class="list-group-item">Produit B</li>
+                                <li class="list-group-item">Produit C</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="card mb-4 shadow">
+                        <div class="card-header text-light bg-primary">Mouvements Récents des Stocks</div>
+                        <div class="card-body">
+                            <ul class="list-group">
+                                <li class="list-group-item">Ajout de 100 unités du Produit A</li>
+                                <li class="list-group-item">Retrait de 50 unités du Produit B</li>
+                                <li class="list-group-item">Ajout de 30 unités du Produit C</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card mb-4 shadow">
+                        <div class="card-header text-light bg-primary">Graphiques des Ventes</div>
+                        <div class="card-body">
+                            <canvas id="salesChart" class="w-100 h-100"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <footer>
+
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        var ctx = document.getElementById('salesChart').getContext('2d');
+        var salesChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul','Aug','Sept','Oct', 'Nov', 'Dec'],
+                datasets: [{
+                    label: 'Ventes',
+                    data: [0, 65, 59, 80, 81, 56, 55, 40, 25, 60, 95, 85],
+                    backgroundColor: 'rgb(71, 71, 255)',
+                    borderColor: 'rgb(71, 71, 255)',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
