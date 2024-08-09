@@ -49,6 +49,7 @@ export default function Management() {
                                         name={product.name}
                                         quantity={product.quantity}
                                         price={product.price}
+                                        getProdList={getProdList}
                                     />
                                 ))}
                             </tbody>

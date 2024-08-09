@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Delete from '../IMG/remove.png';
 import Edit from '../IMG/pen.png';
 
@@ -10,13 +10,25 @@ export default function StockProd(props) {
         quantity: props.quantity,
         price: props.price
     });
+    const [initialQuantity,setInitialQuantity]=useState(props.quantity);
+
+    useEffect(() => {
+        setInitialQuantity(props.quantity);
+        setUpdatedData({
+            name: props.name,
+            quantity: props.quantity,
+            price: props.price
+        });
+    }, [props.name, props.quantity, props.price]);
 
     const handleDelete = async () => {
-        if (window.confirm("Êtes-vous sûr de vouloir supprimer ce produit ?")) {
+        if (window.confirm("Are you sure ?")) {
             try{
-                    axios.delete("http://localhost:8000/prod/deleteProd",{
-                        name:updatedData.name
-                    })
+                   const res=await axios.delete("http://localhost:8000/prod/deleteProd",{
+                        data:{name:updatedData.name}
+                    });
+                    await props.getProdList();
+                    console.log('produit supprimé'+res.data);
             }catch(err){
                 console.log(err.response?.data.message);
             }
@@ -29,14 +41,33 @@ export default function StockProd(props) {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
+        let acceptedValue;
+
+        if (name === 'price') {
+            acceptedValue = Math.max(0, Number(value));
+        } else if (name === 'quantity') {
+            acceptedValue = Number(value) < initialQuantity ? initialQuantity : Number(value);
+        } else {
+            acceptedValue = value;
+        }
+
         setUpdatedData((prevData) => ({
             ...prevData,
-            [name]: value
+            [name]: acceptedValue
         }));
     };
 
-    const handleSave = () => {
-        // Ajoute ici le code pour mettre à jour le produit avec updatedData
+    const handleSave =async () => {
+        try{
+            await axios.put("http://localhost:8000/prod/updateProd",{
+                name:updatedData.name,
+                price:updatedData.price,
+                quantity:updatedData.quantity
+            })
+            await props.getProdList();
+        }catch(err){
+                console.error(err.response?.data.message);
+        }  
         console.log("Produit mis à jour :", updatedData);
         setIsEditing(false);
     };
@@ -55,6 +86,7 @@ export default function StockProd(props) {
                         value={updatedData.name}
                         onChange={handleChange}
                         className="form-control"
+                        readOnly
                     />
                 ) : (
                     props.name

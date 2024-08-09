@@ -3,9 +3,9 @@ import SaleHistory from "../component/SaleHistory";
 export default function History(){
     return(
         <>
-            <div class="mt-5" >
-            <h1 class="mt-2">Sales History</h1>
-            <div class="row mx-auto">
+            <div className="mt-5" >
+            <h1 className="mt-2">Sales History</h1>
+            <div className="row mx-auto">
                 <SaleHistory/>
                 <SaleHistory/>
                 <SaleHistory/>
