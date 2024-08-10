@@ -1,10 +1,28 @@
-import { useState } from "react";
+import axios from 'axios';
+import { useState, useEffect } from "react";
 
 export default function Sale() {
     const [formData, setFormData] = useState({
         customer: '',
         date: new Date().toISOString().split('T')[0],
     });
+
+    const [products, setProducts] = useState([]);
+    const [selectedProducts, setSelectedProducts] = useState([]);
+    const [totalAmount, setTotalAmount] = useState(0);
+
+    const getProdList = async () => {
+        try {
+            const res = await axios.get("http://localhost:8000/prod/prodList");
+            setProducts(res.data.message);
+        } catch (err) {
+            console.error(err.response?.data.message);
+        }
+    }
+
+    useEffect(() => {
+        getProdList();
+    }, []);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -14,8 +32,39 @@ export default function Sale() {
         }));
     };
 
-    const handleSubmit = (e) => {
+    const handleAddProduct = (product, quantity) => {
+        const productTotal = product.price * quantity;
+        setSelectedProducts(prev => [...prev, { ...product, quantity, total: productTotal }]);
+        setTotalAmount(prev => prev + productTotal);
+    };
+
+    const handleRemoveProduct = (productName) => {
+        setSelectedProducts(prev => {
+            const updatedProducts = prev.filter(p => p.name !== productName);
+            const removedProduct = prev.find(p => p.name === productName);
+            setTotalAmount(prev => prev - (removedProduct.price * removedProduct.quantity));
+            return updatedProducts;
+        });
+    };
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
+        try {
+            const res = await axios.post("http://localhost:8000/sell", {
+                ...formData,
+                products: selectedProducts,
+                totalAmount
+            });
+            alert(res.data.message);
+            setSelectedProducts([]);
+            setTotalAmount(0);
+            setFormData({
+                customer: '',
+                date: new Date().toISOString().split('T')[0],
+            });
+        } catch (err) {
+            console.error(err.response?.data.message);
+        }
     };
 
     return (
@@ -24,21 +73,31 @@ export default function Sale() {
                 <div className="col-md-5 col-lg-6">
                     <h1 className="m-2">Products</h1>
                     <div className="row">
-                        {/* Répéter ce bloc pour chaque produit */}
-                        <div className="col-md-6 col-lg-3 m-2">
-                            <div className="card shadow">
-                                <div className="card-header bg-success text-light">ProduitA</div>
-                                <div className="card-body">
-                                    <h5>Price: 5000 Ar</h5>
-                                    <h5>Quantity: 450</h5>
-                                    <div className="input-group">
-                                        <button className="btn btn-primary">Add</button>
-                                        <input type="number" className="form-control" />
+                        {products.map((product) => (
+                            <div className="col-md-6 col-lg-3 m-2" key={product.name}>
+                                <div className="card shadow">
+                                    <div className="card-header bg-success text-light">{product.name}</div>
+                                    <div className="card-body">
+                                        <h5>Price: {product.price} Ar</h5>
+                                        <h5>Quantity: {product.quantity}</h5>
+                                        <div className="input-group">
+                                            <button
+                                                className="btn btn-primary"
+                                                onClick={() => handleAddProduct(product, 1)}
+                                            >
+                                                Add
+                                            </button>
+                                            <input
+                                                type="number"
+                                                className="form-control"
+                                                min="1"
+                                                onChange={(e) => handleAddProduct(product, parseInt(e.target.value))}
+                                            />
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        {/* Répétez le bloc au-dessus pour chaque produit */}
+                        ))}
                     </div>
                 </div>
                 <form onSubmit={handleSubmit} className="col-md-6 container">
@@ -74,7 +133,7 @@ export default function Sale() {
                             <thead>
                                 <tr>
                                     <td className="text-center" colSpan="2">
-                                        <h3>Total: 1500000000 Ar</h3>
+                                        <h3>Total: {totalAmount} Ar</h3>
                                     </td>
                                     <td colSpan="2">
                                         <button className="btn btn-success w-100" type="submit">Sale</button>
@@ -88,16 +147,21 @@ export default function Sale() {
                                 </tr>
                             </thead>
                             <tbody>
-                                {/* Répétez ce bloc pour chaque produit ajouté */}
-                                <tr>
-                                    <td className="text-center py-2">ProduitA</td>
-                                    <td className="text-center py-2">50</td>
-                                    <td className="text-center py-2">250000 Ar</td>
-                                    <td className="text-center py-2">
-                                        <button className="btn btn-warning text-light">Undo</button>
-                                    </td>
-                                </tr>
-                                {/* Répétez le bloc ci-dessus pour chaque produit */}
+                                {selectedProducts.map((prod) => (
+                                    <tr key={prod.name}>
+                                        <td className="text-center py-2">{prod.name}</td>
+                                        <td className="text-center py-2">{prod.quantity}</td>
+                                        <td className="text-center py-2">{prod.total} Ar</td>
+                                        <td className="text-center py-2">
+                                            <button
+                                                className="btn btn-warning text-light"
+                                                onClick={() => handleRemoveProduct(prod.name)}
+                                            >
+                                                Undo
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))}
                             </tbody>
                         </table>
                     </div>
