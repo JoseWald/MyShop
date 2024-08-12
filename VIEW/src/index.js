@@ -10,6 +10,7 @@ import Dashboard from "./page/Dashboard";
 import Sale from "./page/Sale";
 import History from "./page/history";
 import Management from "./page/Management";
+import RecentSale from "./page/recentSale";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -23,6 +24,7 @@ root.render(
       <Route path="/Sale" element={<Sale />} />
       <Route path="/History" element={<History />} />
       <Route path="/Management" element={<Management />} />
+      <Route path="recentSale" element={<RecentSale/>} />
     </Routes>
   </Router>
 );

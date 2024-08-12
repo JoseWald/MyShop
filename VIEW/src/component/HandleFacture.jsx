@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import {useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 export default function HandleFacture(props) {
@@ -29,7 +29,8 @@ export default function HandleFacture(props) {
                     data: { name: name }
                 });
                 console.log('Produit supprimé :', res.data);
-                props.getWishList();
+                await  props.getWishList();
+                await props.getProdList()
             } catch (err) {
                 console.log(err.response?.data.message);
                 setError(err.response?.data.message);
@@ -55,7 +56,8 @@ export default function HandleFacture(props) {
             });
 
             setError('');
-            sendNotification();
+            navigate('/recentSale');
+         
         } catch (err) {
             console.error(err.response?.data.message);
             setError(err.response?.data.message);
@@ -63,25 +65,6 @@ export default function HandleFacture(props) {
     };
 
     const totalAmount = wishList.reduce((acc, product) => acc + (product.price * product.quantity), 0);
-
-    useEffect(() => {
-        if (Notification.permission === 'default' || Notification.permission === 'undefined') {
-            Notification.requestPermission().then(permission => {
-                console.log('permission granted');
-            });
-        }
-    }, []);
-
-    const sendNotification = () => {
-        const notif = new Notification('Success', {
-            body: 'Product sold successfully, check the bill',
-        });
-        if (Notification.permission === 'granted') {
-            notif.onclick = () => {
-                navigate('/History');
-            };
-        }
-    };
 
     return (
         <div className="col-md-6 container">

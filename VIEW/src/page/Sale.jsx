@@ -47,7 +47,11 @@ export default function Sale() {
                         ))}
                     </div>
                 </div>
-                <HandleFacture getWishList={getWishList} wishList={wishList} />
+                <HandleFacture 
+                        getWishList={getWishList} 
+                        wishList={wishList} 
+                        getProdList={getProdList}
+                />
             </div>
         </>
     );
