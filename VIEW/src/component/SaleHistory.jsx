@@ -9,7 +9,7 @@ export default function SaleHistory(props) {
 
     return (
         <div className="container mt-5 col-md-4">
-            <h1 className="text-center mb-4">{(props.customer).toUpperCase()} {props.date}</h1>
+           
 
             <div className="card p-4 shadow-sm">
                 <div className="row mb-3">

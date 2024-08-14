@@ -10,9 +10,10 @@ export default function Dashboard() {
     const [mostSelled, setMostSelled] = useState([]);
     const [replenish,setReplenish]=useState([]);
     const [status, setStatus] = useState('');
+    const [weekly,setWeekly]=useState('');
 
     useEffect(() => {
-        chart();
+        Createchart();
         getDailyGain();
         getProdNbr();
         getLowStock();
@@ -20,22 +21,37 @@ export default function Dashboard() {
         getMostSelled();
         getReplenish();
         handleCleanup();
+        getWeeklyStat();
     }, []);
 
-    const chart = () => {
+    useEffect(()=>{
+        if(weekly.length>0)
+            Createchart()
+    },[weekly])
+
+    const Createchart = () => {
         const ctx = document.getElementById('salesChart').getContext('2d');
     
         if (Chart.getChart('salesChart')) {
             Chart.getChart('salesChart').destroy();
         }
+
     
         new Chart(ctx, {
             type: 'bar',
             data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'],
+                labels: ['Mon', 'Tue', 'Wed', 'Tur', 'Fri','Sat','Sun'],
                 datasets: [{
                     label: 'Ventes',
-                    data: [12, 19, 3, 5, 2],
+                    data: [
+                        weekly[0],
+                        weekly[1],
+                        weekly[2],
+                        weekly[3],
+                        weekly[4],
+                        weekly[5],
+                        weekly[6]
+                    ],
                     backgroundColor: 'rgba(75, 192, 192, 0.2)',
                     borderColor: 'rgba(75, 192, 192, 1)',
                     borderWidth: 1
@@ -90,7 +106,7 @@ export default function Dashboard() {
     const getMostSelled = async () => {
         try {
             const response = await axios.get("http://localhost:8000/stat/most-selled");
-            console.log("Données reçues :", response.data.topProducts); 
+            //console.log("Données reçues :", response.data.topProducts); 
             if (Array.isArray(response.data.topProducts)) {
                 setMostSelled(response.data.topProducts);
             } else {
@@ -112,12 +128,33 @@ export default function Dashboard() {
     }
     const handleCleanup = async () => {
         try {
-            const response = await axios.post("http://localhost:8000/cleanup");
+            const response = await axios.post("http://localhost:8000/stat/cleanup");
             setStatus(response.data.message);
         } catch (err) {
             setStatus("Erreur lors du nettoyage : " + err.message);
         }
     };
+
+    const getWeeklyStat = async () => {
+        try {
+            const res = await axios.get("http://localhost:8000/stat/weekly-stat");
+            console.log("res=", res.data.weeklyStats);
+    
+          
+            let weeklyTmp = res.data.weeklyStats.map((stat, index) => stat || 0);
+            
+        
+            while (weeklyTmp.length < 7) {
+                weeklyTmp.push(0);
+            }
+    
+            setWeekly(weeklyTmp);
+            console.log(weeklyTmp);
+        } catch (err) {
+            console.log(err.response?.data.message || "weekly stat not received");
+        }
+    };
+    
     return (
         <div className="mt-5">
             <div className="container-fluid">
