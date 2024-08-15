@@ -1,0 +1,170 @@
+const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs');
+
+const UserSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  email: { type: String, required: true, unique: true },
+  password: { type: String, required: true },
+});
+
+// Hash password before saving to database
+UserSchema.pre('save', async function(next) {
+  if (!this.isModified('password')) {
+    return next();
+  }
+  const salt = await bcrypt.genSalt(10);
+  this.password = await bcrypt.hash(this.password, salt);
+  next();
+});
+
+const User = mongoose.model('User', UserSchema);
+module.exports = User;
+//
+const express = require('express');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const User = require('../models/User');
+const router = express.Router();
+
+// Inscription
+router.post('/register', async (req, res) => {
+  const { name, email, password } = req.body;
+  try {
+    let user = await User.findOne({ email });
+    if (user) {
+      return res.status(400).json({ msg: 'User already exists' });
+    }
+    user = new User({ name, email, password });
+    await user.save();
+    const payload = { user: { id: user.id } };
+    jwt.sign(payload, 'yourSecretToken', { expiresIn: 3600 }, (err, token) => {
+      if (err) throw err;
+      res.json({ token });
+    });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server error');
+  }
+});
+
+// Connexion
+router.post('/login', async (req, res) => {
+  const { email, password } = req.body;
+  try {
+    let user = await User.findOne({ email });
+    if (!user) {
+      return res.status(400).json({ msg: 'Invalid Credentials' });
+    }
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ msg: 'Invalid Credentials' });
+    }
+    const payload = { user: { id: user.id } };
+    jwt.sign(payload, 'yourSecretToken', { expiresIn: 3600 }, (err, token) => {
+      if (err) throw err;
+      res.json({ token });
+    });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server error');
+  }
+});
+
+module.exports = router;
+//
+const jwt = require('jsonwebtoken');
+
+module.exports = function(req, res, next) {
+  const token = req.header('x-auth-token');
+  if (!token) {
+    return res.status(401).json({ msg: 'No token, authorization denied' });
+  }
+  try {
+    const decoded = jwt.verify(token, 'yourSecretToken');
+    req.user = decoded.user;
+    next();
+  } catch (err) {
+    res.status(401).json({ msg: 'Token is not valid' });
+  }
+};
+//
+const express = require('express');
+const auth = require('../middleware/auth');
+const router = express.Router();
+
+// Route protégée
+router.get('/protected-route', auth, (req, res) => {
+  res.send('This is a protected route');
+});
+
+module.exports = router;
+//
+import React, { useState } from 'react';
+import axios from 'axios';
+
+const Login = () => {
+  const [formData, setFormData] = useState({ email: '', password: '' });
+
+  const { email, password } = formData;
+
+  const onChange = e => setFormData({ ...formData, [e.target.name]: e.target.value });
+
+  const onSubmit = async e => {
+    e.preventDefault();
+    try {
+      const res = await axios.post('/api/auth/login', { email, password });
+      localStorage.setItem('token', res.data.token);
+      // Redirect or load protected content
+    } catch (err) {
+      console.error(err.response.data);
+    }
+  };
+
+  return (
+    <form onSubmit={e => onSubmit(e)}>
+      <input type='email' name='email' value={email} onChange={e => onChange(e)} />
+      <input type='password' name='password' value={password} onChange={e => onChange(e)} />
+      <input type='submit' value='Login' />
+    </form>
+  );
+};
+
+export default Login;
+//
+import React from 'react';
+import { Route, Redirect } from 'react-router-dom';
+
+const PrivateRoute = ({ component: Component, ...rest }) => (
+  <Route
+    {...rest}
+    render={props =>
+      localStorage.getItem('token') ? (
+        <Component {...props} />
+      ) : (
+        <Redirect to='/login' />
+      )
+    }
+  />
+);
+
+export default PrivateRoute;
+//
+import React from 'react';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import PrivateRoute from './components/PrivateRoute';
+import Login from './components/Login';
+import Dashboard from './components/Dashboard';
+
+const App = () => {
+  return (
+    <Router>
+      <Switch>
+        <Route exact path='/login' component={Login} />
+        <PrivateRoute exact path='/dashboard' component={Dashboard} />
+      </Switch>
+    </Router>
+  );
+};
+
+export default App;
+

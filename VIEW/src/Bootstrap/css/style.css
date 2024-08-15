@@ -1,0 +1,16 @@
+a{
+    text-decoration: none;
+}
+#signup{
+    border: solid 2px rgb(71, 71, 255);
+    font-weight: bold;
+}
+#signup:hover{
+    background-color:rgb(122, 171, 249);
+    color: white;
+
+}
+#login:hover{
+    text-decoration: underline;
+}
+
